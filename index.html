@@ -2,164 +2,444 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Matematik Arqon Tortish - 2 Kishilik</title>
+    <title>Matematik Arqon Tortish - Milliy Uslubda</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
+            font-family: 'Fredoka One', cursive, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 55%, #90EE90 55%, #90EE90 100%);
             margin: 0;
-            padding: 20px;
-        }
-        h2 { color: #333; }
-        
-        /* Arqon dizayni */
-        #rope-container {
-            width: 600px;
-            height: 15px;
-            background: #8B4513;
-            margin: 30px auto;
-            position: relative;
-            border-radius: 10px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        #marker {
-            width: 30px;
-            height: 40px;
-            background: #ffcc00; /* Sariq tugun */
-            position: absolute;
-            top: -12px;
-            left: 285px; /* O'rtada (600/2 - 15) */
-            transition: left 0.2s ease-out;
-            border-radius: 5px;
-            border: 2px solid #333;
-        }
-
-        /* O'yin maydoni grid orqali joylashuvi */
-        .game-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        /* O'yinchilar paneli */
-        .player-panel {
-            width: 250px;
             padding: 15px;
-            border-radius: 10px;
-        }
-        .player1 { background-color: #e3f2fd; border: 2px solid #2196F3; }
-        .player2 { background-color: #ffebee; border: 2px solid #f44336; }
-        
-        .player-panel h3 { margin-top: 0; }
-        .player1 h3 { color: #1976D2; }
-        .player2 h3 { color: #D32F2F; }
-
-        /* Umumiy savol ekrani */
-        #question-box {
-            font-size: 36px;
-            font-weight: bold;
-            color: #333;
-            width: 200px;
-            background: #fff9c4;
-            padding: 20px 0;
-            border-radius: 10px;
-            border: 3px dashed #ffb300;
-        }
-
-        /* Javob tugmalari */
-        .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
         }
-        .option-btn {
-            font-size: 22px;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.1s, background-color 0.2s;
-        }
-        
-        .player1 .option-btn { background-color: #2196F3; color: white; }
-        .player1 .option-btn:hover { background-color: #1976D2; transform: scale(1.05); }
-        
-        .player2 .option-btn { background-color: #f44336; color: white; }
-        .player2 .option-btn:hover { background-color: #D32F2F; transform: scale(1.05); }
 
+        /* Asosiy konteyner */
+        .main-container {
+            width: 98%;
+            max-width: 950px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* --- Yuqori qism: Ochkolar va Hakam --- */
+        .header-scores {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .score-board {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            color: #333;
+            padding: 12px 30px;
+            border-radius: 20px;
+            border: 5px solid #FF6B35;
+            text-align: center;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
+            min-width: 140px;
+            position: relative;
+        }
+
+        .score-board::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 15px solid #FF6B35;
+        }
+
+        .score-title {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 3px;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+        }
+
+        .score-value {
+            font-size: 45px;
+            font-weight: bold;
+            color: #FF6B35;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .blue-score {
+            background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+            border-color: #1565C0;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        .blue-score::before { border-bottom-color: #1565C0; }
+        .blue-score .score-title { color: white; }
+        .blue-score .score-value { color: white; }
+
+        .red-score {
+            background: linear-gradient(135deg, #EF5350 0%, #E53935 100%);
+            border-color: #C62828;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        .red-score::before { border-bottom-color: #C62828; }
+        .red-score .score-title { color: white; }
+        .red-score .score-value { color: white; }
+
+        /* Hakam */
+        .referee {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            border-radius: 50%;
+            border: 4px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            z-index: 2;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3), inset 0 -2px 5px rgba(0,0,0,0.1);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- O'rta qism: Arqon sahnasi --- */
+        .scene-container {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E8F5E9 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 5px solid #8B4513;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 2px 8px rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Team graphics */
+        .team {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            font-size: 50px;
+            z-index: 1;
+        }
+
+        .team.blue {
+            left: 5%;
+            animation: pullLeft 2s ease-in-out infinite;
+        }
+
+        .team.red {
+            right: 5%;
+            animation: pullRight 2s ease-in-out infinite;
+            transform: scaleX(-1);
+        }
+
+        @keyframes pullLeft {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-15px); }
+        }
+
+        @keyframes pullRight {
+            0%, 100% { transform: translateX(0) scaleX(-1); }
+            50% { transform: translateX(15px) scaleX(-1); }
+        }
+
+        /* Arqon */
+        .rope {
+            height: 25px;
+            background: repeating-linear-gradient(45deg, #D2B48C, #D2B48C 10px, #A0826D 10px, #A0826D 20px);
+            position: absolute;
+            top: 50%;
+            left: -5%;
+            width: 110%;
+            transform: translateY(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2;
+        }
+
+        .rope::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: repeating-linear-gradient(90deg, #8B7355, #8B7355 5px, #6B5345 5px, #6B5345 10px);
+        }
+
+        .rope::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: repeating-linear-gradient(90deg, #8B7355, #8B7355 5px, #6B5345 5px, #6B5345 10px);
+        }
+
+        /* Arqon o'rtasidagi belgi */
+        .rope-marker {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+            z-index: 3;
+            animation: wave 0.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(5deg); }
+            75% { transform: translateX(-50%) rotate(-5deg); }
+        }
+
+        /* --- Pastki qism: Savollar va Tugmalar --- */
+        .question-area {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .player-board {
+            flex: 1;
+            background: linear-gradient(135deg, #DEB887 0%, #D2B48C 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 5px solid #8B4513;
+            box-shadow: 0 10px 0 #5A2D0C, inset 0 2px 8px rgba(255,255,255,0.4);
+            text-align: center;
+        }
+
+        .blue-board {
+            background: linear-gradient(135deg, #BBDEFB 0%, #90CAF9 100%);
+            border-color: #1976D2;
+            box-shadow: 0 10px 0 #1565C0, inset 0 2px 8px rgba(255,255,255,0.5);
+        }
+
+        .red-board {
+            background: linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%);
+            border-color: #D32F2F;
+            box-shadow: 0 10px 0 #C62828, inset 0 2px 8px rgba(255,255,255,0.5);
+        }
+
+        .question-text {
+            font-size: 42px;
+            color: #333;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.6);
+            font-weight: bold;
+        }
+
+        .options-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            font-family: 'Fredoka One', cursive, sans-serif;
+            font-size: 28px;
+            padding: 18px 28px;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: all 0.1s;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        .option-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .blue-board .option-btn {
+            background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+            border: 3px solid #2E7D32;
+        }
+
+        .red-board .option-btn {
+            background: linear-gradient(135deg, #FFA726 0%, #FF9800 100%);
+            border: 3px solid #E65100;
+        }
+
+        /* --- Eng pastki banner --- */
+        .footer-banner {
+            background: linear-gradient(135deg, #8B4513 0%, #6B3410 100%);
+            color: #FFD700;
+            font-size: 32px;
+            padding: 15px 30px;
+            text-align: center;
+            border-radius: 18px;
+            border: 5px solid #5A2D0C;
+            box-shadow: 0 8px 0 #3A1D0C, inset 0 2px 8px rgba(255,255,255,0.2);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* G'olib xabari */
+        #winner-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: #FFD700;
+            padding: 40px 60px;
+            border-radius: 30px;
+            font-size: 3.5em;
+            text-align: center;
+            z-index: 100;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 5px solid #FFD700;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
+
+        #winner-message.show {
+            transform: translate(-50%, -50%) scale(1);
+            animation: winnerPulse 0.6s ease-out;
+        }
+
+        @keyframes winnerPulse {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <h2>Matematik Arqon Tortish (Duel)</h2>
-    <p>Tezroq o'ylang! To'g'ri javobni birinchi bo'lib bosgan o'yinchi arqonni tortadi.</p>
-
-    <div id="rope-container">
-        <div id="marker"></div>
-    </div>
-
-    <div class="game-area">
-        <div class="player-panel player1">
-            <h3>1-O'yinchi (Ko'k)</h3>
-            <div class="options" id="p1-options">
-                </div>
+    <div class="main-container">
+        <div class="header-scores">
+            <div class="score-board blue-score">
+                <div class="score-title">KO'K JAMOASI</div>
+                <div class="score-value" id="score1">0</div>
+            </div>
+            <div class="referee">👮‍♂️</div>
+            <div class="score-board red-score">
+                <div class="score-title">QIZIL JAMOASI</div>
+                <div class="score-value" id="score2">0</div>
+            </div>
         </div>
 
-        <div id="question-box">? + ? = ?</div>
-
-        <div class="player-panel player2">
-            <h3>2-O'yinchi (Qizil)</h3>
-            <div class="options" id="p2-options">
-                </div>
+        <div class="scene-container">
+            <div class="team blue">👧👦👧👦👧</div>
+            <div class="rope" id="main-rope">
+                <div class="rope-marker">🚩</div>
+            </div>
+            <div class="team red">👦👧👦👧👦</div>
         </div>
+
+        <div class="question-area">
+            <div class="player-board blue-board">
+                <div id="p1-question" class="question-text">? + ? = ?</div>
+                <div id="p1-options" class="options-container"></div>
+            </div>
+
+            <div class="player-board red-board">
+                <div id="p2-question" class="question-text">? x ? = ?</div>
+                <div id="p2-options" class="options-container"></div>
+            </div>
+        </div>
+
+        <div class="footer-banner">JAVOB BERING!</div>
     </div>
+
+    <div id="winner-message"></div>
 
     <script>
-        let position = 285; // Arqon markazi
-        let currentAnswer = 0;
+        // O'yin holati o'zgaruvchilari
+        let ropePosition = 50; // Foiz hisobida (50% = o'rtada)
+        let score1 = 0;
+        let score2 = 0;
+        let answer1 = 0;
+        let answer2 = 0;
         let gameActive = true;
+        const WIN_LIMIT = 90; // Yutish chegarasi (%)
+        const LOSE_LIMIT = 10; // Yutqazish chegarasi (%)
+        const MOVE_STEP = 4; // Har bir to'g'ri javob uchun siljish (%)
+        const PENALTY = 2; // Xato uchun jazo (%)
 
-        // Savol va javoblarni yaratish
+        // DOM elementlari
+        const ropeEl = document.getElementById('main-rope');
+        const score1El = document.getElementById('score1');
+        const score2El = document.getElementById('score2');
+        const winnerMsgEl = document.getElementById('winner-message');
+
+        // Yangi raundni boshlash (savollarni yaratish)
         function generateRound() {
             if (!gameActive) return;
 
-            // Tasodifiy sonlar (1 dan 20 gacha)
-            let n1 = Math.floor(Math.random() * 20) + 1;
-            let n2 = Math.floor(Math.random() * 20) + 1;
-            currentAnswer = n1 + n2;
-            
-            document.getElementById('question-box').innerText = `${n1} + ${n2}`;
-
-            // 3 ta variant yaratish (1 ta to'g'ri, 2 ta xato)
-            let options = [
-                currentAnswer,
-                currentAnswer + Math.floor(Math.random() * 5) + 1, // Xato javob 1
-                currentAnswer - Math.floor(Math.random() * 5) - 1  // Xato javob 2
-            ];
-
-            // Variantlarni aralashtirish (Shuffle)
-            options.sort(() => Math.random() - 0.5);
-
-            // Tugmalarni ekranga chiqarish
-            renderButtons('p1-options', options, 1);
-            renderButtons('p2-options', options, 2);
+            // 1-O'yinchi uchun savol (Qo'shish/Ayirish - osonroq)
+            generateQuestion(1, ['+', '-']);
+            // 2-O'yinchi uchun savol (Ko'paytirish/Qo'shish - rasmga mos)
+            generateQuestion(2, ['*', '+']);
         }
 
-        // HTML ga tugmalarni chizish
-        function renderButtons(containerId, optionsArray, playerNum) {
-            let container = document.getElementById(containerId);
-            container.innerHTML = ''; // Eski tugmalarni tozalash
+        function generateQuestion(playerNum, operators) {
+            let n1, n2, op, ans;
+            op = operators[Math.floor(Math.random() * operators.length)];
 
-            optionsArray.forEach(opt => {
+            if (op === '*') {
+                n1 = Math.floor(Math.random() * 9) + 2; // 2 dan 10 gacha
+                n2 = Math.floor(Math.random() * 9) + 2;
+                ans = n1 * n2;
+            } else {
+                n1 = Math.floor(Math.random() * 20) + 1;
+                n2 = Math.floor(Math.random() * 20) + 1;
+                ans = op === '+' ? n1 + n2 : n1 - n2;
+            }
+
+            // To'g'ri javobni saqlash
+            if (playerNum === 1) answer1 = ans; else answer2 = ans;
+
+            // Savol matnini chiqarish
+            document.getElementById(`p${playerNum}-question`).innerText = `${n1} ${op.replace('*','×')} ${n2} = ?`;
+
+            // Variantlarni yaratish va aralashtirish
+            let options = [ans, ans + Math.floor(Math.random()*5)+1, ans - Math.floor(Math.random()*5)-1];
+            options.sort(() => Math.random() - 0.5);
+
+            // Tugmalarni chizish
+            renderButtons(`p${playerNum}-options`, options, playerNum);
+        }
+
+        function renderButtons(containerId, options, playerNum) {
+            let container = document.getElementById(containerId);
+            container.innerHTML = '';
+            options.forEach(opt => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
@@ -172,57 +452,74 @@
         function checkAnswer(selected, playerNum) {
             if (!gameActive) return;
 
-            if (selected === currentAnswer) {
-                // To'g'ri javob topilsa
+            let isCorrect = false;
+            if (playerNum === 1 && selected === answer1) isCorrect = true;
+            if (playerNum === 2 && selected === answer2) isCorrect = true;
+
+            if (isCorrect) {
+                // To'g'ri javob: Ochko oshadi va arqon tortiladi
                 if (playerNum === 1) {
-                    position -= 50; // 1-o'yinchi yutsa chapga tortiladi
+                    score1++;
+                    ropePosition -= MOVE_STEP; // Chapga
                 } else {
-                    position += 50; // 2-o'yinchi yutsa o'ngga tortiladi
+                    score2++;
+                    ropePosition += MOVE_STEP; // O'ngga
                 }
+                // O'sha o'yinchiga darhol yangi savol beriladi
+                if (playerNum === 1) generateQuestion(1, ['+', '-']); else generateQuestion(2, ['*', '+']);
             } else {
-                // Xato javob bossa, jazo sifatida arqon raqibga qarab ketadi
-                if (playerNum === 1) {
-                    position += 30; 
-                } else {
-                    position -= 30;
-                }
+                // Xato javob: Jazo sifatida arqon raqibga ketadi
+                if (playerNum === 1) ropePosition += PENALTY; else ropePosition -= PENALTY;
+                // Xato qilganda ham yangi savol beramiz (tezlikni oshirish uchun)
+                if (playerNum === 1) generateQuestion(1, ['+', '-']); else generateQuestion(2, ['*', '+']);
             }
 
-            updateMarker();
+            updateUI();
             checkWinner();
-            
-            // O'yin davom etayotgan bo'lsa, yangi savol berish
-            if (gameActive) {
-                generateRound();
-            }
         }
 
-        function updateMarker() {
-            document.getElementById('marker').style.left = position + 'px';
+        function updateUI() {
+            // Arqon pozitsiyasini chegaralash (10% dan 90% gacha)
+            ropePosition = Math.max(LOSE_LIMIT, Math.min(WIN_LIMIT, ropePosition));
+            // Arqonni siljitish
+            ropeEl.style.left = `${ropePosition - 50}%`; 
+            // Ochkolarni yangilash
+            score1El.innerText = score1;
+            score2El.innerText = score2;
         }
 
         function checkWinner() {
-            if (position <= 0) {
-                position = 0;
-                updateMarker();
-                gameActive = false;
-                setTimeout(() => { alert("🏆 1-O'YINCHI (Ko'k) g'alaba qozondi!"); resetGame(); }, 200);
-            } else if (position >= 570) { // 600 - 30 (tugun kengligi)
-                position = 570;
-                updateMarker();
-                gameActive = false;
-                setTimeout(() => { alert("🏆 2-O'YINCHI (Qizil) g'alaba qozondi!"); resetGame(); }, 200);
+            if (ropePosition <= LOSE_LIMIT) {
+                endGame("🔵 KO'K JAMOASI G'OLIB! 🏆");
+            } else if (ropePosition >= WIN_LIMIT) {
+                endGame("🔴 QIZIL JAMOASI G'OLIB! 🏆");
             }
         }
 
+        function endGame(message) {
+            gameActive = false;
+            winnerMsgEl.innerText = message;
+            winnerMsgEl.classList.add('show');
+            // Barcha tugmalarni o'chirib qo'yish
+            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+            
+            setTimeout(() => {
+                if(confirm("Yana o'ynaysizmi?")) resetGame();
+            }, 3000);
+        }
+
         function resetGame() {
-            position = 285;
+            ropePosition = 50;
+            score1 = 0;
+            score2 = 0;
             gameActive = true;
-            updateMarker();
+            winnerMsgEl.classList.remove('show');
+            updateUI();
             generateRound();
         }
 
         // O'yinni boshlash
+        updateUI();
         generateRound();
     </script>
 
