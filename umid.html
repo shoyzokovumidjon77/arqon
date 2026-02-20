@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Matematik Arqon Tortish - 2 Kishilik</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 { color: #333; }
+        
+        /* Arqon dizayni */
+        #rope-container {
+            width: 600px;
+            height: 15px;
+            background: #8B4513;
+            margin: 30px auto;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        #marker {
+            width: 30px;
+            height: 40px;
+            background: #ffcc00; /* Sariq tugun */
+            position: absolute;
+            top: -12px;
+            left: 285px; /* O'rtada (600/2 - 15) */
+            transition: left 0.2s ease-out;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+
+        /* O'yin maydoni grid orqali joylashuvi */
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* O'yinchilar paneli */
+        .player-panel {
+            width: 250px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .player1 { background-color: #e3f2fd; border: 2px solid #2196F3; }
+        .player2 { background-color: #ffebee; border: 2px solid #f44336; }
+        
+        .player-panel h3 { margin-top: 0; }
+        .player1 h3 { color: #1976D2; }
+        .player2 h3 { color: #D32F2F; }
+
+        /* Umumiy savol ekrani */
+        #question-box {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            width: 200px;
+            background: #fff9c4;
+            padding: 20px 0;
+            border-radius: 10px;
+            border: 3px dashed #ffb300;
+        }
+
+        /* Javob tugmalari */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            font-size: 22px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        
+        .player1 .option-btn { background-color: #2196F3; color: white; }
+        .player1 .option-btn:hover { background-color: #1976D2; transform: scale(1.05); }
+        
+        .player2 .option-btn { background-color: #f44336; color: white; }
+        .player2 .option-btn:hover { background-color: #D32F2F; transform: scale(1.05); }
+
+    </style>
+</head>
+<body>
+
+    <h2>Matematik Arqon Tortish (Duel)</h2>
+    <p>Tezroq o'ylang! To'g'ri javobni birinchi bo'lib bosgan o'yinchi arqonni tortadi.</p>
+
+    <div id="rope-container">
+        <div id="marker"></div>
+    </div>
+
+    <div class="game-area">
+        <div class="player-panel player1">
+            <h3>1-O'yinchi (Ko'k)</h3>
+            <div class="options" id="p1-options">
+                </div>
+        </div>
+
+        <div id="question-box">? + ? = ?</div>
+
+        <div class="player-panel player2">
+            <h3>2-O'yinchi (Qizil)</h3>
+            <div class="options" id="p2-options">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        let position = 285; // Arqon markazi
+        let currentAnswer = 0;
+        let gameActive = true;
+
+        // Savol va javoblarni yaratish
+        function generateRound() {
+            if (!gameActive) return;
+
+            // Tasodifiy sonlar (1 dan 20 gacha)
+            let n1 = Math.floor(Math.random() * 20) + 1;
+            let n2 = Math.floor(Math.random() * 20) + 1;
+            currentAnswer = n1 + n2;
+            
+            document.getElementById('question-box').innerText = `${n1} + ${n2}`;
+
+            // 3 ta variant yaratish (1 ta to'g'ri, 2 ta xato)
+            let options = [
+                currentAnswer,
+                currentAnswer + Math.floor(Math.random() * 5) + 1, // Xato javob 1
+                currentAnswer - Math.floor(Math.random() * 5) - 1  // Xato javob 2
+            ];
+
+            // Variantlarni aralashtirish (Shuffle)
+            options.sort(() => Math.random() - 0.5);
+
+            // Tugmalarni ekranga chiqarish
+            renderButtons('p1-options', options, 1);
+            renderButtons('p2-options', options, 2);
+        }
+
+        // HTML ga tugmalarni chizish
+        function renderButtons(containerId, optionsArray, playerNum) {
+            let container = document.getElementById(containerId);
+            container.innerHTML = ''; // Eski tugmalarni tozalash
+
+            optionsArray.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, playerNum);
+                container.appendChild(btn);
+            });
+        }
+
+        // Javobni tekshirish
+        function checkAnswer(selected, playerNum) {
+            if (!gameActive) return;
+
+            if (selected === currentAnswer) {
+                // To'g'ri javob topilsa
+                if (playerNum === 1) {
+                    position -= 50; // 1-o'yinchi yutsa chapga tortiladi
+                } else {
+                    position += 50; // 2-o'yinchi yutsa o'ngga tortiladi
+                }
+            } else {
+                // Xato javob bossa, jazo sifatida arqon raqibga qarab ketadi
+                if (playerNum === 1) {
+                    position += 30; 
+                } else {
+                    position -= 30;
+                }
+            }
+
+            updateMarker();
+            checkWinner();
+            
+            // O'yin davom etayotgan bo'lsa, yangi savol berish
+            if (gameActive) {
+                generateRound();
+            }
+        }
+
+        function updateMarker() {
+            document.getElementById('marker').style.left = position + 'px';
+        }
+
+        function checkWinner() {
+            if (position <= 0) {
+                position = 0;
+                updateMarker();
+                gameActive = false;
+                setTimeout(() => { alert("🏆 1-O'YINCHI (Ko'k) g'alaba qozondi!"); resetGame(); }, 200);
+            } else if (position >= 570) { // 600 - 30 (tugun kengligi)
+                position = 570;
+                updateMarker();
+                gameActive = false;
+                setTimeout(() => { alert("🏆 2-O'YINCHI (Qizil) g'alaba qozondi!"); resetGame(); }, 200);
+            }
+        }
+
+        function resetGame() {
+            position = 285;
+            gameActive = true;
+            updateMarker();
+            generateRound();
+        }
+
+        // O'yinni boshlash
+        generateRound();
+    </script>
+
+</body>
+</html>
